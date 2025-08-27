@@ -2,12 +2,12 @@
   "name": "ImpactOne — Vida com Propósito",
   "short_name": "ImpactOne",
   "start_url": ".",
-  "scope": "/impactone-pwa/",
+  "scope": "/impactone-pw/",
   "display": "standalone",
   "background_color": "#0b1220",
   "theme_color": "#0f172a",
   "icons": [
-    { "src": "/impactone-pwa/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/impactone-pwa/assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/impactone-pw/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/impactone-pw/assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
