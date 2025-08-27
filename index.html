@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ImpactOne — Vida com Propósito</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <style>
+    :root{--bg:#0b1220;--card:#111827;--muted:#6b7280;--text:#e5e7eb;--accent:#22d3ee;--good:#22c55e;--warn:#f59e0b;--danger:#ef4444}
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:
+      radial-gradient(1200px 600px at 20% -10%,#1f2937,transparent),
+      radial-gradient(900px 900px at 120% -20%,#0ea5e9,transparent),var(--bg);color:var(--text)}
+    .app{max-width:980px;margin:0 auto;padding:16px 16px 80px}
+    header{display:flex;align-items:center;gap:12px;padding:16px 0 6px}
+    .logo{width:40px;height:40px;border-radius:10px;background:#0ea5e9;display:grid;place-items:center;font-weight:800;color:#0b1220}
+    header h1{font-size:1.25rem;margin:0}
+    header small{display:block;color:var(--muted);font-size:.75rem}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;box-shadow:0 1px 0 rgba(255,255,255,.03) inset}
+    .grid{display:grid;gap:12px}
+    @media(min-width:800px){.grid-2{grid-template-columns:1fr 1fr}}
+    button,.btn{background:linear-gradient(180deg,#0ea5e9,#0284c7);border:none;color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 10px 24px rgba(14,165,233,.25)}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,.15);box-shadow:none}
+    input,textarea,select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:var(--text);padding:10px 12px;outline:0}
+    label{color:var(--muted);font-size:.85rem;display:block;margin-bottom:4px}
+    .tabs{position:fixed;bottom:0;left:0;right:0;background:rgba(10,11,16,.85);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.08)}
+    .tabs nav{display:grid;grid-template-columns:repeat(5,1fr)}
+    .tabs button{background:transparent;border:none;padding:12px 6px;color:var(--muted);font-weight:700}
+    .tabs button.active{color:var(--text);border-top:3px solid var(--accent)}
+    .list{display:grid;gap:8px}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:.8rem}
+    .muted{color:var(--muted)}.kudos{color:var(--good);font-weight:700}.warn{color:var(--warn);font-weight:700}.danger{color:var(--danger);font-weight:700}
+    .row{display:flex;gap:8px;align-items:center}.spacer{height:16px}.hidden{display:none}
+    a{color:#67e8f9;text-decoration:none}.footer-note{color:var(--muted);font-size:.8rem;margin-top:16px}
+    .tag{font-size:.7rem;color:#94a3b8;border:1px dashed rgba(148,163,184,.4);border-radius:999px;padding:2px 8px;margin-left:6px}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">IO</div>
+      <div>
+        <h1>ImpactOne <span class="tag">PWA</span></h1>
+        <small>Uma rotina para viver com propósito — plano, aprendizado, fé e impacto.</small>
+      </div>
+    </header>
+
+    <div id="view-onboarding" class="card">
+      <h2>Bem-vindo(a) 👋</h2>
+      <p>Personalize em segundos.</p>
+      <div class="grid grid-2">
+        <div><label>Seu nome</label><input id="name" placeholder="Seu primeiro nome" /></div>
+        <div><label>Idioma</label><select id="lang"><option value="pt">Português (Brasil)</option><option value="en">English</option><option value="es">Español</option></select></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="grid grid-2">
+        <div><label>Objetivo maior (12 meses)</label><input id="bigGoal" placeholder="Ex: Quitar dívidas, lançar produto, saúde plena" /></div>
+        <div><label>3 Hábitos-chave (vírgulas)</label><input id="habits" placeholder="Ex: orar, treinar, estudar inglês" /></div>
+      </div>
+      <div class="spacer"></div>
+      <button onclick="saveOnboarding()">Começar</button>
+    </div>
+
+    <div id="view-home" class="hidden">
+      <div class="grid grid-2">
+        <section class="card">
+          <h2>Plano de Hoje</h2>
+          <p class="muted">Método 1-3-1.</p>
+          <div class="list" id="todayPlan"></div>
+          <div class="spacer"></div>
+          <button class="ghost" onclick="regenPlan()">Regenerar plano</button>
+        </section>
+        <section class="card">
+          <h2>Check-ins</h2>
+          <div class="list">
+            <div class="row"><input type="checkbox" id="checkHabit1" onchange="toggleHabit(0)"/> <label for="checkHabit1" id="habit1Label">Hábito 1</label></div>
+            <div class="row"><input type="checkbox" id="checkHabit2" onchange="toggleHabit(1)"/> <label for="checkHabit2" id="habit2Label">Hábito 2</label></div>
+            <div class="row"><input type="checkbox" id="checkHabit3" onchange="toggleHabit(2)"/> <label for="checkHabit3" id="habit3Label">Hábito 3</label></div>
+          </div>
+          <div class="spacer"></div>
+          <div id="impactScore" class="muted">Impact Points: 0</div>
+        </section>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="grid grid-2">
+        <section class="card">
+          <h2>Aprender (Micro-lições)</h2>
+          <p class="muted">Blocos de 7 minutos.</p>
+          <div id="lessonsList" class="list"></div>
+        </section>
+        <section class="card">
+          <h2>Fé & Reflexão</h2>
+          <div class="list">
+            <textarea id="journal" rows="5" placeholder="Escreva sua oração/diário de hoje…"></textarea>
+            <button onclick="saveJournal()">Salvar reflexão</button>
+            <div class="spacer"></div>
+            <div id="quoteBox" class="muted"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="spacer"></div>
+
+      <section class="card">
+        <h2>Ações de Bondade</h2>
+        <p class="muted">Registre e ganhe pontos.</p>
+        <div class="row">
+          <input id="kindnessText" placeholder="Ex: Ajudar um vizinho com compras" />
+          <button onclick="addKindness()">Registrar</button>
+        </div>
+        <div class="spacer"></div>
+        <div id="kindnessList" class="list"></div>
+      </section>
+
+      <div class="spacer"></div>
+
+      <section class="card">
+        <h2>IA (Opcional)</h2>
+        <p class="muted">Cole sua OpenAI Key em Config.</p>
+        <div class="row">
+          <button class="ghost" onclick="aiGeneratePlan()">Gerar plano via IA</button>
+          <button class="ghost" onclick="aiGenerateLesson()">Criar lição via IA</button>
+        </div>
+        <p id="aiStatus" class="muted"></p>
+      </section>
+
+      <div class="footer-note">Feito com ❤️ • Offline-first • Dados locais.</div>
+    </div>
+
+    <div id="view-settings" class="hidden card">
+      <h2>Configurações</h2>
+      <div class="grid grid-2">
+        <div><label>OpenAI Key (opcional)</label><input id="openaiKey" placeholder="sk-..." oninput="saveKey(this.value)" /><small class="muted">Armazenada no seu dispositivo.</small></div>
+        <div>
+          <label>Exportar/Importar</label>
+          <div class="row"><button class="ghost" onclick="exportData()">Exportar</button><button class="ghost" onclick="importData()">Importar</button></div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button onclick="resetApp()" class="danger">Zerar app</button>
+      <div class="spacer"></div>
+      <p class="muted">v1.0.0 • MIT</p>
+    </div>
+
+    <div class="tabs">
+      <nav>
+        <button id="tab-home" class="active" onclick="showView('home')">Início</button>
+        <button onclick="showView('learn')">Aprender</button>
+        <button onclick="showView('faith')">Fé</button>
+        <button onclick="showView('kind')">Bondade</button>
+        <button onclick="showView('settings')">Config</button>
+      </nav>
+    </div>
+  </div>
+
+<script>
+const S={profile:null,plan:[],checks:[false,false,false],impact:0,lessons:[],journal:"",kindness:[],key:null,quotes:[]};
+function save(){localStorage.setItem('impactOne',JSON.stringify(S))}
+function load(){const raw=localStorage.getItem('impactOne');if(raw){Object.assign(S,JSON.parse(raw))}}
+function $(id){return document.getElementById(id)};function show(el){el.classList.remove('hidden')};function hide(el){el.classList.add('hidden')}
+function showView(v){document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));if(v==='home')$('tab-home').classList.add('active');if(v==='settings'){hide($('view-home'));show($('view-settings'));return}show($('view-home'));hide($('view-settings'));if(v==='learn'){window.scrollTo({top:$('lessonsList').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'})}if(v==='faith'){window.scrollTo({top:$('journal').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'})}if(v==='kind'){window.scrollTo({top:$('kindnessList').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'})}}
+function saveOnboarding(){const name=$('name').value.trim();const lang=$('lang').value;const bigGoal=$('bigGoal').value.trim();const habits=$('habits').value.split(',').map(s=>s.trim()).filter(Boolean).slice(0,3);if(!name||habits.length<1){alert('Preencha seu nome e pelo menos 1 hábito.');return}S.profile={name,lang,bigGoal,habits};S.checks=[false,false,false];S.impact=0;save();initApp()}
+function genPlan(){const goal=S.profile?.bigGoal||"Progresso no seu projeto principal";return[{type:'peak',text:`Concluir 1 passo crítico para: ${goal}`,done:false},{type:'support',text:`Ação 1 de suporte — 25 minutos Deep Work`,done:false},{type:'support',text:`Ação 2 de suporte — 25 minutos Deep Work`,done:false},{type:'support',text:`Ação 3 de suporte — Follow-ups/WhatsApp/E-mails`,done:false},{type:'self',text:`Cuidado pessoal — 30min (${(S.profile?.habits||['respiro'])[0]})`,done:false}]}
+function renderPlan(){const box=$('todayPlan');box.innerHTML='';S.plan.forEach((it)=>{const row=document.createElement('div');row.className='row';const cb=document.createElement('input');cb.type='checkbox';cb.checked=it.done;cb.onchange=()=>{it.done=cb.checked;if(cb.checked){S.impact+=5;updateImpact();save()}};const label=document.createElement('label');label.textContent=it.text;const pill=document.createElement('span');pill.className='pill';pill.textContent=it.type;row.appendChild(cb);row.appendChild(label);row.appendChild(pill);box.appendChild(row)})}
+function regenPlan(){S.plan=genPlan();save();renderPlan()}
+function updateImpact(){$('impactScore').textContent="Impact Points: "+(S.impact|0)}
+function toggleHabit(i){S.checks[i]=!S.checks[i];if(S.checks[i])S.impact+=3;else S.impact-=2;updateImpact();save()}
+const BUILTIN_LESSONS=[{id:'eng-01',title:'Inglês: Almoço de negócios em Dubai',minutes:7,content:['Waiter: Would you like still or sparkling water?','You: Still, please. We have a meeting at 2 PM.','Key phrase: “Could we have the check, please?” = Podemos ter a conta, por favor?']},{id:'auction-01',title:'Imóveis de Leilão: 5 riscos e como mitigar',minutes:7,content:['1. Ocupação do imóvel → Diligência e previsão de desocupação judicial.','2. Débitos condominiais → Leia o edital; some encargos.','3. Vícios ocultos → Visita externa + laudos.','4. Documentação → Matrícula atualizada, penhoras.','5. Overbidding → Defina teto e não passe.']},{id:'faith-01',title:'Reflexão: “Nada que é verdadeiramente seu se perde”',minutes:5,content:['Respire 60s. Escreva 3 coisas que controla hoje.','Ore: “Senhor, guia meus passos e acalma meu coração.”','Aja: uma ligação de gratidão.']},];
+const BUILTIN_QUOTES=["Coragem é agir, não a ausência de medo.","Deus guia passos que já estão em movimento.","Disciplina vence motivação. Um pouco todo dia.","Nada que é verdadeiramente seu se perde."];
+function renderLessons(){const list=$('lessonsList');list.innerHTML='';(S.lessons.length?S.lessons:BUILTIN_LESSONS).forEach(lesson=>{const item=document.createElement('div');item.className='card';const h=document.createElement('div');h.innerHTML=`<strong>${lesson.title}</strong> <span class="pill">${lesson.minutes||7} min</span>`;const ul=document.createElement('ul');ul.style.marginTop='6px';(lesson.content||[]).forEach(c=>{const li=document.createElement('li');li.textContent=c;ul.appendChild(li)});const btn=document.createElement('button');btn.textContent='Concluir ( +4 pts )';btn.onclick=()=>{S.impact+=4;updateImpact();save();alert('Boa! Você concluiu a lição.')};item.appendChild(h);item.appendChild(ul);item.appendChild(btn);list.appendChild(item)})}
+function saveJournal(){S.journal=$('journal').value;S.impact+=2;updateImpact();save();alert('Reflexão salva!')}
+function rotateQuote(){const q=S.quotes.length?S.quotes:BUILTIN_QUOTES;const i=Math.floor(Math.random()*q.length);$('quoteBox').textContent=q[i]}
+function addKindness(){const txt=$('kindnessText').value.trim();if(!txt)return;S.kindness.unshift({text:txt,ts:Date.now()});S.impact+=5;$('kindnessText').value='';renderKindness();updateImpact();save()}
+function renderKindness(){const box=$('kindnessList');box.innerHTML='';S.kindness.slice(0,10).forEach(k=>{const div=document.createElement('div');div.className='row';const t=new Date(k.ts).toLocaleString();div.innerHTML=`<span class="pill">${t}</span> <span>${k.text}</span>`;box.appendChild(div)})}
+function saveKey(v){S.key=v;save();$('aiStatus').textContent='Chave salva.'}
+function exportData(){const data=JSON.stringify(S,null,2);const blob=new Blob([data],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='impactone-backup.json';a.click();URL.revokeObjectURL(url)}
+function importData(){const inp=document.createElement('input');inp.type='file';inp.accept='application/json';inp.onchange=()=>{const file=inp.files[0];const reader=new FileReader();reader.onload=()=>{Object.assign(S,JSON.parse(reader.result));save();initApp()};reader.readAsText(file)};inp.click()}
+function resetApp(){if(confirm('Tem certeza que deseja zerar o app?')){localStorage.removeItem('impactOne');location.reload()}}
+async function aiChat(prompt){if(!S.key){$('aiStatus').textContent='Sem chave OpenAI. Vá em Config.';return null}try{$('aiStatus').textContent='Gerando com IA…';const resp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.key},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:'Você é um planejador de rotina focado em propósito e impacto.'},{role:'user',content:prompt}],temperature:0.3})});const data=await resp.json();$('aiStatus').textContent='IA pronta.';return data.choices?.[0]?.message?.content||null}catch(e){$('aiStatus').textContent='Erro ao chamar IA: '+e.message;return null}}
+async function aiGeneratePlan(){const name=S.profile?.name||'amigo(a)';const out=await aiChat(`Crie um plano diário 1-3-1 para ${name}. Objetivo anual: ${S.profile?.bigGoal||'progresso'}. Hábitos: ${(S.profile?.habits||[]).join(', ')}.`);if(!out)return;S.plan=out.split('\n').filter(Boolean).slice(0,5).map(t=>({type:'ai',text:t.replace(/^[-*\d.\s]+/,'').trim(),done:false}));save();renderPlan()}
+async function aiGenerateLesson(){const out=await aiChat('Crie uma micro-lição de 7 minutos com 3-6 bullets, tema: produtividade, fé, finanças pessoais ou inglês aplicado.');if(!out)return;S.lessons=[{id:'ai-'+Date.now(),title:'Lição IA',minutes:7,content:out.split('\n').filter(Boolean).map(s=>s.replace(/^[-*\d.\s]+/,'').trim()).slice(0,8)}];save();renderLessons()}
+function initApp(){load();if(!S.profile){hide($('view-home'));hide($('view-settings'));show($('view-onboarding'));return}
+  $('name').value=S.profile.name;$('lang').value=S.profile.lang||'pt';$('bigGoal').value=S.profile.bigGoal||'';$('habits').value=(S.profile.habits||[]).join(', ');
+  $('habit1Label').textContent=S.profile.habits?.[0]||'Hábito 1';$('habit2Label').textContent=S.profile.habits?.[1]||'Hábito 2';$('habit3Label').textContent=S.profile.habits?.[2]||'Hábito 3';
+  $('openaiKey').value=S.key||'';
+  if(!S.plan||S.plan.length===0)S.plan=genPlan();
+  renderPlan();updateImpact();renderLessons();renderKindness();rotateQuote();
+  hide($('view-onboarding'));show($('view-home'));hide($('view-settings'))}
+initApp();
+</script>
+<script>
+if(location.protocol.startsWith('http')){window.addEventListener('load',()=>{'serviceWorker'in navigator && navigator.serviceWorker.register('sw.js')})}
+</script>
+</body>
+</html>
